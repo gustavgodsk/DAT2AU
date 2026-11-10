@@ -32,5 +32,8 @@ const DEFAULT_CONFIG = {
     },
     panopto: {
         redirect_to_embed: true
+    },
+    themes: {
+        enabled: true
     }
 };
