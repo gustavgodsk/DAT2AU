@@ -34,3 +34,17 @@ input[type="text"] {
     justify-content: end;
     gap: 10px;
 }
+
+.own_abbreviations {
+    input {
+        field-sizing: content;
+        min-width: 100px;
+    }
+
+    .setting-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+    }
+}

@@ -12,6 +12,11 @@ async function generateUI() {
 
     // Kick off recursion
     buildForm(DEFAULT_CONFIG, currentConfig, container);
+    buildOwnAbbreviations(
+        "mitstudie.forkortelser",
+        currentConfig.mitstudie?.forkortelser?.ownAbbreviations || {}
+    );
+
 }
 
 function buildForm(defaults, current, parent, path = "") {
@@ -27,6 +32,7 @@ function buildForm(defaults, current, parent, path = "") {
             value !== null
         ) {
             const fieldset = document.createElement("fieldset");
+            fieldset.classList.add(key);
             const legend = document.createElement("legend");
             // legend.textContent = key.replace(/_/g, " ");
             legend.textContent = key;
@@ -65,6 +71,59 @@ function buildForm(defaults, current, parent, path = "") {
         wrapper.appendChild(input);
         parent.appendChild(wrapper);
     }
+}
+
+function buildOwnAbbreviations(path = "", saved = {}) { 
+    //Find element to attach to
+    const fieldsetPar = document.querySelector(".own_abbreviations");
+    const basePath = path ? `${path}.ownAbbreviations` : "ownAbbreviations";
+
+    function addRow(name = "", abbr = "") { 
+        // On click: create pair of [name, abbreviation] and add to config
+        // form is: (label, input)
+        const label = document.createElement("input");
+        label.value = name;
+        const input = document.createElement("input");
+        input.value = abbr;
+        
+        // newly added options should be able to be removed
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Fjern";
+
+        const settingsItem = document.createElement("div");
+        settingsItem.className = "setting-item";
+        settingsItem.append(label, input, removeButton);
+        fieldsetPar.appendChild(settingsItem);
+
+        // name which is currently saved.
+        let currentKey = name;
+
+        async function saveChanges() {
+            const newKey = label.value.trim();
+            if (currentKey && currentKey !== newKey) {
+                await deleteDeepSetting(`${basePath}.${currentKey}`);
+            }
+            if (newKey) {
+                await saveDeepSetting(`${basePath}.${newKey}`, input.value);
+                currentKey = newKey;
+            }
+        }
+
+        label.addEventListener("change", saveChanges);
+        input.addEventListener("change", saveChanges);
+
+        removeButton.addEventListener("click", async () => {
+            if (currentKey) await deleteDeepSetting(`${basePath}.${currentKey}`);
+            fieldsetPar.removeChild(settingsItem);
+        });
+    }
+    // Render already-saved pairs
+    for (const [k, v] of Object.entries(saved)) addRow(k, v);
+
+    const button = document.createElement("button");
+    button.textContent = "Tilføj Par";
+    button.addEventListener("click", () => addRow());
+    fieldsetPar.appendChild(button);
 }
 
 async function resetToDefaults() {

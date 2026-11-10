@@ -43,6 +43,14 @@
             const h4 = button.querySelector("h4");
             h4.textContent = CONFIG.mitstudie.forkortelser.par[eventTitle];
         }
+        //egne forkortelser
+        if(
+            CONFIG.mitstudie.forkortelser.enabled &&
+            CONFIG.mitstudie.forkortelser.ownAbbreviations[eventTitle]
+        ) {
+            const h4 = button.querySelector("h4");
+            h4.textContent = CONFIG.mitstudie.forkortelser.ownAbbreviations[eventTitle];
+        }
 
         colorButton(button, subject.color);
     }

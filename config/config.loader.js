@@ -57,6 +57,22 @@ async function saveDeepSetting(path, value) {
     await chrome.storage.sync.set({ DAT2Config });
 }
 
+async function deleteDeepSetting(path) {
+    const storage = await chrome.storage.sync.get("DAT2Config");
+    const DAT2Config = storage.DAT2Config || {};
+
+    const parts = path.split(".");
+    let current = DAT2Config;
+    
+    for (let i = 0; i < parts.length - 1; i++) {
+        if (!(parts[i] in current)) return;
+        current = current[parts[i]];
+    }
+    delete current[parts[parts.length - 1]];
+
+    await chrome.storage.sync.set({ DAT2Config });
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "sync" && changes.DAT2Config) {
         const newOverrides = changes.DAT2Config.newValue || {};

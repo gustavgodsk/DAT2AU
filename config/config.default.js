@@ -12,6 +12,10 @@ const DEFAULT_CONFIG = {
                 "Computerarkitektur, Netværk og Operativsystemer": "ComArch",
                 "Programmeringssprog": "ProgSprog",
                 "Beregnelighed og logik": "BerLog"
+            },
+            own_abbreviations : { 
+                /* Example usage - configured through the UI */
+                // "Human-Computer Interaction": "HCI" 
             }
         },
 
